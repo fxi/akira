@@ -39,8 +39,8 @@ export class JoystickMap {
      * Directional input
      */
     this._ctrl.on("move", (_, d) => {
-      state.delta.b = d.vector.x * 1;
-      state.delta.y = d.vector.y * 10;
+      state.delta.b = d.vector.x * 1 || 0;
+      state.delta.y = d.vector.y * 10 || 0;
     });
 
     this._ctrl.on("start", async () => {
@@ -69,7 +69,7 @@ export class JoystickMap {
 
     state.rendering = true;
     state.bearing += state.delta.b;
-    state.offset[1] = -state.delta.y;
+    state.offset[1] = -state.delta.y * 0.6;
     this._map.jumpTo(
       {
         bearing: state.bearing,
