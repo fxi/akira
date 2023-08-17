@@ -1,0 +1,11 @@
+.ctrl {
+  width: 150px;
+  height: 150px;
+  background: rgb(26 29 33 / 39%);
+  border-radius: 30px;
+  cursor: grab;
+  position: absolute;
+  left: calc(50% - 75px);
+  bottom: 80px;
+  z-index: 3;
+}
