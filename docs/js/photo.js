@@ -57,6 +57,7 @@ We look at (in order of preference):
 
 //initial map view if no previous map setting found in URL or local storage,
 
+var useCache = false;
 var initialLat = 35.37527;
 var initialLng = 138.72744;
 var initialZoom = 11.34;
@@ -80,7 +81,7 @@ if (hashValues.length == 5 && !hashValues.some(isNaN)) {
 
 /* if we have some valid location info from the browsers URL or, failing that, the browsers localStorage cache, 
 make the map use those settings (rather than the defaults) when it sets itself up */
-if (gotSomeLocationVariables) {
+if (useCache && gotSomeLocationVariables) {
   initialLat = parseFloat(hashValues[0]);
   initialLng = parseFloat(hashValues[1]);
   initialZoom = parseFloat(hashValues[2]);
