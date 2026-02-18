@@ -1,0 +1,274 @@
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+}
+
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    filter:  hue-rotate(-6deg) contrast(0.85) brightness(1) saturate(0.9);
+    transition: filter 1s;
+    -webkit-transition: filter 1s;
+    transition-delay: 0.25s;
+    -webkit-transition-delay: 0.25s;
+    
+}
+
+
+
+/* 
+The tiltshift layers are just big DIVs that cover the whole map.
+They are set up here, and then the javascript applies the blur effects later on
+*/
+
+#tiltShift {
+    display: none; /* this gets turned on by the javascript */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    pointer-events: none; /* Ensure the mouse pointer can't interact with this layer */
+}
+
+#lensReflection{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    pointer-events: none;
+    background-image: url(../textures/lens-reflection2.jpg);
+    mix-blend-mode: screen;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0;
+    background-size: 100%;
+    transition: opacity 0.02s ease-in, background-size 1s ease-in-out;
+    -webkit-transition: opacity 0.02s ease-in, background-size 1s ease-in-out;
+}
+
+#focus{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    pointer-events: none; /* Ensure the mouse pointer can't interact with this layer */
+    backdrop-filter: blur(0.6px);
+    -webkit-backdrop-filter: blur(0.6px);
+    transition-property: all;
+    -webkit-transition-property: all;
+    transition-timing-function: ease-out;
+    -webkit-transition-timing-function: ease-out;
+
+}
+
+#focus, #lensGrime{
+    transition-duration:  0.3s;
+    transition-delay: 0.1s;
+    -webkit-transition-duration: 0.3s;
+    -webkit-transition-delay: 0.1s;
+    
+}
+
+#lensGrime{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 4;
+    pointer-events: none;
+    background-image: url(../textures/LensDirt04.jpeg);
+    mix-blend-mode: color-dodge;
+    background-size: cover;
+    opacity: 0.2;
+
+    transform: rotate(0deg) scale(2.3);
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(.29,.74,.84,1.3);
+    -webkit-transition-property: transform;
+    -webkit-transition-timing-function: cubic-bezier(.29,.74,.84,1.3);
+}
+
+#aberration{
+    display:block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+        z-index: 2;
+        pointer-events: none;
+        /* https://medium.com/@menosketiago/css-only-tilt-shift-photography-5a86d09189f5 */
+    
+    backdrop-filter:  url('#chromaticAberration');
+     -webkit-backdrop-filter: url('#chromaticAberration'); 
+       
+    -webkit-mask-image: radial-gradient(ellipse 100% 80% at 50% 50%, transparent 30%, black 80%);
+        mask-image: radial-gradient(ellipse 100% 80% at 50% 50%, transparent 30%, black 80%);
+
+        
+        
+}
+
+
+
+
+
+#photoEffect {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    pointer-events: none;
+}
+#photoEffect.vignette {
+    background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 60%, rgba(17,28,0,0.50) 100%);
+    mix-blend-mode: hard-light;
+}
+
+#filmGrain {
+    display:block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    pointer-events: none;
+    background-image: url(../textures/filmgrain-tiny.jpg);
+    background-position: 0 0;
+    mix-blend-mode: normal;
+    opacity: 0.15;
+    background-size: 100px;
+    filter: blur(0.3px);
+
+}
+
+
+
+body.effectsOff #photoEffect,
+body.effectsOff #tiltShift,
+body.effectsOff #aberration,
+body.effectsOff #lensGrime,
+body.effectsOff #lensReflection,
+body.effectsOff #filmGrain,
+
+body.effectsOff #focus{
+    display: none !important;
+}
+
+body.effectsOff #map,
+body.effectsOff #map canvas{
+filter:none !important;
+-webkit-filter: none !important;
+}
+
+
+#effectsButton{
+    display: none;
+    left:10px;
+    top: 10px;
+    position:fixed;
+    padding:10px;
+    z-index:10;
+    border: 1px solid black;
+    background-color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border-radius: 4px;
+}
+@keyframes fadeout {
+from {
+    opacity: 1; 
+    padding-left:5px; 
+    padding-top: 0px;
+    transform: translateX(0);
+    transform: translateY(0);
+    
+}
+to {
+    opacity: 0; 
+    padding-left:15px; 
+    
+    transform: translateX(10px);
+    
+}
+}
+.drop{
+    z-index:10;
+    pointer-events: none;
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:7px;
+    height:7px;
+    border-radius: 50% 50%;
+    box-shadow: inset 5px 5px 5px rgba(0,0,0,0.5),
+    
+    inset -5px -5px 7px rgba(255,255,255,0.9);
+    opacity:0;
+    animation-name: fadeout;
+    animation-duration: 2s;
+    animation-timing-function: ease-out;
+    filter: blur(1.2px);
+    
+}
+.drop::before{
+    pointer-events: none;
+    content: '';
+    position: absolute;
+    top:20%;
+    left:20%;
+    background: #fff;
+    width:10%;
+    height: 10%;
+    border-radius: 50%;
+
+}
+
+.effectsOff .drop{
+    display:none;
+}
+
+
+#routes {
+    position: absolute;
+    z-index: 3;
+    width: 50%;
+    left: 50%;
+    margin-left: -25%;
+    bottom: 50px;
+    text-align: center;
+    z-index: 100;
+}
+
+.button, a.button {
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 1em;
+    color: #fff;
+    background-color: #1e3a80;
+    border: 3px solid rgba(255,255,255,0.5)
+}
+
+.button:hover, a.button:hover {
+    background-color: #3357b0;
+    border: 5px solid rgba(255,255,255,0.5);
+    color: #fff;
+}
