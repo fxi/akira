@@ -1,0 +1,13 @@
+{
+  "name": "akira",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite docs",
+    "build": "vite build docs",
+    "preview": "vite preview docs"
+  },
+  "devDependencies": {
+    "vite": "^5.4.8"
+  }
+}

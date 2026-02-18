@@ -1,0 +1,9 @@
+{
+  "name": "akira",
+  "description": "Photoreal map experiment for Mapbox GL",
+  "tags": ["map", "mapbox", "3d"],
+  "year_init": 2023,
+  "year_last": 2023,
+  "url": "https://fxi.io/akira/",
+  "featured": false
+}
